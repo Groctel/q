@@ -1,0 +1,23 @@
+#!/usr/bin/sh
+
+qshdir="$HOME/.q/"
+qshfile="$qshdir""q"
+
+if ! [ -f "$qshfile" ]; then
+	if ! [ -d "$qshfile" ]; then
+		mkdir -p "$qshdir"
+	fi
+
+	touch "$qshfile"
+fi
+
+if [ $# -eq 0 ]; then
+	if [ -s "$qshfile" ]; then
+		sed q "$qshfile"
+		sed -i '1d' "$qshfile"
+	else
+		echo "Nothing in your q!"
+	fi
+else
+	echo "$1" >> "$qshfile"
+fi
