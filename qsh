@@ -4,12 +4,16 @@ Init () {
 	lines=""
 	qshdir="$HOME/.q/"
 	qshfile="$qshdir""q"
+	fclear=0
 	fprint=0
 }
 
 ParseArgs () {
 	while [ $# -gt 0 ]; do
 		case "$1" in
+			-c|--clear)
+				fclear=1
+			;;
 			-d|--directory)
 				qshdir="$(echo "$qshdir" | sed 's/\//\\\//g')"
 				qshfile="$(echo "$qshfile" | sed 's/'"$qshdir"'//')"
@@ -77,6 +81,7 @@ ParseArgs "$@"
 mkdir -p "$qshdir"
 touch "$qshfile"
 
+[ $fclear -eq 1 ] && sed -i 'd' "$qshfile"
 [ -n "$lines" ] && echo "$lines" >> "$qshfile"
 [ -z "$lines" ] && [ $fprint -eq 0 ] && Pop
 [ $fprint -eq 1 ] && {

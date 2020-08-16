@@ -40,6 +40,7 @@ Non-flag arguments will allways be parsed as strings to enter in the q **in argv
 
 | **Argument**        | **Arity** | **Description**                                                   |
 | ------------------- | :-------: | ----------------------------------------------------------------- |
+| `-c`, `--clear`     |     0     | Clear the q (respects `-d` and `-f`) before other operations.     |
 | `-d`, `--directory` |     1     | Set a new q directory other than the default.                     |
 | `-f`, `--file`      |     1     | Set a new q file in the current directory other than the default. |
 | `-p`, `--print`     |     0     | Print the whole q and extract an specific element.                |
@@ -72,4 +73,16 @@ qsh https://arxiv.org/abs/1811.12044 -d $HOME/.myq -f mainq
 
 ```sh
 qsh -p
+```
+
+### Clear the q:
+
+```sh
+qsh -c
+```
+
+You can also clear the q and add more elements afterwards:
+
+```sh
+qsh -c -p "Here's a new line after clearing the q"
 ```
