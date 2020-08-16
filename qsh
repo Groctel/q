@@ -1,9 +1,36 @@
 #!/usr/bin/sh
 
+lines=""
 qshdir="$HOME/.q/"
 qshfile="$qshdir""q"
 
-init () {
+ParseArgs () {
+	while [ $# -gt 0 ]; do
+		case "$1" in
+			-d|--directory)
+				qshdir="$(echo "$qshdir" | sed 's/\//\\\//g')"
+				qshfile="$(echo "$qshfile" | sed 's/'"$qshdir"'//')"
+				qshdir="$2/"
+				qshfile="$qshdir""$qshfile"
+				shift
+			;;
+			-f|--file)
+				qshfile="$qshdir""$2"
+				shift
+			;;
+			*)
+				lines=$(echo "$lines
+				$1" | sed 's/^\t\+//g')
+			;;
+		esac
+
+		shift
+	done
+
+	lines="$(echo "$lines" | sed '1d')"
+}
+
+Init () {
 	[ ! -f "$qshfile" ] && {
 		[ ! -d "$qshfile" ] && {
 			mkdir -p "$qshdir"
@@ -12,9 +39,10 @@ init () {
 	}
 }
 
-init
+ParseArgs "$@"
+Init
 
-if [ $# -eq 0 ]; then
+if [ -z "$lines" ]; then
 	if [ -s "$qshfile" ]; then
 		sed q "$qshfile"
 		sed -i '1d' "$qshfile"
@@ -22,5 +50,5 @@ if [ $# -eq 0 ]; then
 		echo "Nothing in your q!"
 	fi
 else
-	echo "$1" >> "$qshfile"
+	echo "$lines" >> "$qshfile"
 fi
