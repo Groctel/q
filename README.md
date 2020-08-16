@@ -43,6 +43,7 @@ Non-flag arguments will allways be parsed as strings to enter in the q **in argv
 | `-c`, `--clear`     |     0     | Clear the q (respects `-d` and `-f`) before other operations.     |
 | `-d`, `--directory` |     1     | Set a new q directory other than the default.                     |
 | `-f`, `--file`      |     1     | Set a new q file in the current directory other than the default. |
+| `-h`, `--help`      |     0     | Print the help text and ignore any other operations.              |
 | `-p`, `--print`     |     0     | Print the whole q and extract an specific element.                |
 
 Bear in mind that changing the directory will **always** update the file path.
