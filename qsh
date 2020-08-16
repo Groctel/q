@@ -1,8 +1,19 @@
 #!/usr/bin/sh
 
-lines=""
-qshdir="$HOME/.q/"
-qshfile="$qshdir""q"
+CheckFiles () {
+	[ ! -f "$qshfile" ] && {
+		[ ! -d "$qshfile" ] && {
+			mkdir -p "$qshdir"
+		}
+		touch "$qshfile"
+	}
+}
+
+Init () {
+	lines=""
+	qshdir="$HOME/.q/"
+	qshfile="$qshdir""q"
+}
 
 ParseArgs () {
 	while [ $# -gt 0 ]; do
@@ -10,7 +21,7 @@ ParseArgs () {
 			-d|--directory)
 				qshdir="$(echo "$qshdir" | sed 's/\//\\\//g')"
 				qshfile="$(echo "$qshfile" | sed 's/'"$qshdir"'//')"
-				qshdir="$2/"
+				qshdir="$(echo "$2/" | sed 's/\/\/$/\//')"
 				qshfile="$qshdir""$qshfile"
 				shift
 			;;
@@ -30,17 +41,9 @@ ParseArgs () {
 	lines="$(echo "$lines" | sed '1d')"
 }
 
-Init () {
-	[ ! -f "$qshfile" ] && {
-		[ ! -d "$qshfile" ] && {
-			mkdir -p "$qshdir"
-		}
-		touch "$qshfile"
-	}
-}
-
-ParseArgs "$@"
 Init
+ParseArgs "$@"
+CheckFiles
 
 if [ -z "$lines" ]; then
 	if [ -s "$qshfile" ]; then

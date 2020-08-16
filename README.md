@@ -35,7 +35,7 @@ If not especified, `qsh` will load the following variables:
 
 ## Arguments
 
-Arguments are defined as *dash options* (`-.\+`) followed by a space and their corresponding value.
+Arguments are defined as *dash options* (`--?.\+`) followed by a space and their corresponding value.
 Non-flag arguments will allways be parsed as strings to enter in the q **in argv order**.
 
 | **Argument**        | **Description**                                                   |
