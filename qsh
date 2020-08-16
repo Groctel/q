@@ -3,13 +3,16 @@
 qshdir="$HOME/.q/"
 qshfile="$qshdir""q"
 
-if ! [ -f "$qshfile" ]; then
-	if ! [ -d "$qshfile" ]; then
-		mkdir -p "$qshdir"
-	fi
+init () {
+	[ ! -f "$qshfile" ] && {
+		[ ! -d "$qshfile" ] && {
+			mkdir -p "$qshdir"
+		}
+		touch "$qshfile"
+	}
+}
 
-	touch "$qshfile"
-fi
+init
 
 if [ $# -eq 0 ]; then
 	if [ -s "$qshfile" ]; then
