@@ -38,12 +38,14 @@ If not especified, `qsh` will load the following variables:
 Arguments are defined as *dash options* (`--?.\+`) followed by a space and their corresponding value.
 Non-flag arguments will allways be parsed as strings to enter in the q **in argv order**.
 
-| **Argument**        | **Description**                                                   |
-| ------------------- | ----------------------------------------------------------------- |
-| `-d`, `--directory` | Set a new q directory other than the default.                     |
-| `-f`, `--file`      | Set a new q file in the current directory other than the default. |
+| **Argument**        | **Arity** | **Description**                                                   |
+| ------------------- | :-------: | ----------------------------------------------------------------- |
+| `-d`, `--directory` |     1     | Set a new q directory other than the default.                     |
+| `-f`, `--file`      |     1     | Set a new q file in the current directory other than the default. |
+| `-p`, `--print`     |     0     | Print the whole q and extract an specific element.                |
 
 Bear in mind that changing the directory will **always** update the file path.
+If `-p` is set, it will override the default `Pop` function.
 
 ## Usage
 
@@ -64,4 +66,10 @@ Same as before, you can add the flags in any order.
 qsh https://arxiv.org/abs/1811.12044
 qsh -d $HOME/.myq -f mainq https://arxiv.org/abs/1811.12044
 qsh https://arxiv.org/abs/1811.12044 -d $HOME/.myq -f mainq
+```
+
+### Display every element in the q:
+
+```sh
+qsh -p
 ```

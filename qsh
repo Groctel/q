@@ -1,18 +1,10 @@
 #!/usr/bin/sh
 
-CheckFiles () {
-	[ ! -f "$qshfile" ] && {
-		[ ! -d "$qshfile" ] && {
-			mkdir -p "$qshdir"
-		}
-		touch "$qshfile"
-	}
-}
-
 Init () {
 	lines=""
 	qshdir="$HOME/.q/"
 	qshfile="$qshdir""q"
+	fprint=0
 }
 
 ParseArgs () {
@@ -29,29 +21,65 @@ ParseArgs () {
 				qshfile="$qshdir""$2"
 				shift
 			;;
+			-p|--print)
+				fprint=1
+			;;
 			*)
 				lines=$(echo "$lines
 				$1" | sed 's/^\t\+//g')
 			;;
 		esac
-
 		shift
 	done
 
 	lines="$(echo "$lines" | sed '1d')"
 }
 
-Init
-ParseArgs "$@"
-CheckFiles
-
-if [ -z "$lines" ]; then
-	if [ -s "$qshfile" ]; then
+Pop () {
+	[ -s "$qshfile" ] && {
 		sed q "$qshfile"
 		sed -i '1d' "$qshfile"
-	else
-		echo "Nothing in your q!"
-	fi
-else
-	echo "$lines" >> "$qshfile"
-fi
+	}
+
+	[ ! -s "$qshfile" ] && printf "\033[31;1mYour q is empty!\033[0m\n"
+}
+
+Print () {
+	index=1
+	spaces=$(wc -l "$qshfile" | sed 's/ .*$//g')
+	spaces=${#spaces}
+
+	printf "\033[32;1m%-*s Description\033[0m\n" "$((spaces+1))" "#:"
+
+	while read -r line; do
+		[ $((index % 10)) -eq 0 ] && echo
+		printf "\033[34;1m%-*s \033[0m%s\n" "$((spaces+1))" "$index:" "$line"
+		: $((index += 1))
+	done < "$qshfile"
+
+	printf "\n\033[32;1m==> \033[0;1mExtract a string (0 for none): \033[0m"
+	read -r index
+
+	case $index in
+		0|*[!0-9]**)
+			echo "There is nothing to do."
+		;;
+		*)
+			sed "$index"'q;d' "$qshfile"
+			sed -i "$index"'d' "$qshfile"
+		;;
+	esac
+}
+
+Init
+ParseArgs "$@"
+
+mkdir -p "$qshdir"
+touch "$qshfile"
+
+[ -n "$lines" ] && echo "$lines" >> "$qshfile"
+[ -z "$lines" ] && [ $fprint -eq 0 ] && Pop
+[ $fprint -eq 1 ] && {
+	( [ -s "$qshfile" ] && Print ) || Pop
+}
+return 0
