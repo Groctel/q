@@ -96,4 +96,4 @@ touch "$qshfile"
 [ $fprint -eq 1 ] && {
 	( [ -s "$qshfile" ] && Print ) || Pop
 }
-return 0
+true
